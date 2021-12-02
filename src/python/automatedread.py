@@ -2,6 +2,10 @@ import time
 import serial
 import processdata
 import azureclient
+import logging
+
+# Configure logging
+# logging.basicConfig(filename="/var/log/energy-meter/ingress.log",filemode='w',level=logging.DEBUG)
 
 READ_BYTES = 375
 READ_TIMEOUT_SEC = 15
@@ -20,30 +24,31 @@ ser = serial.Serial(
 
 if (not ser.isOpen()):
     ser.open()
-    print("Serial port open")
+    logging.info("Serial port open")
 
 if (ser.isOpen()):
-    print("Serial port open, writing...")
+    logging.info("Serial port open, writing...")
     command = b"\x2F\x3F\x21\x0D\x0A"  # /?!<CRL><LF>
-    print("/?!<CRL><LF> : "+command)
+    logging.info("/?!<CRL><LF> : "+str(command))
     ser.write(command)
     time.sleep(1)
     command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
-    print("<ACK>000<CR><LF> : "+command)
+    logging.info("<ACK>000<CR><LF> : "+str(command))
     ser.write(command)
 
-    print("Wait to 1s in order to let the serialport completes the write")
+    logging.info(
+        "Wait for 1s in order to let the serialport completes the write")
 
     time.sleep(1)
 
-    print("Read {} block from serial".format(READ_BYTES))
+    logging.info("Reading.. {} block from serial".format(READ_BYTES))
     start = time.time()
     data = ser.read(READ_BYTES)
-    delta=time.time()-start
-    print("Reading "+str(data.__len__())+" took "+str(delta))
+    delta = time.time()-start
+    logging.info("Reading "+str(data.__len__())+" took "+str(delta))
 
     ser.close()
-    print("Serial port closed")
+    logging.info("Serial port closed")
 
 paresdData = processdata.parse_powermeter_data(data)
 

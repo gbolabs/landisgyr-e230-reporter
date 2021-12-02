@@ -8,4 +8,4 @@ time.sleep(1)
 
 endtime = timeit.default_timer()
 delta = endtime-startTime
-print("Time taken: "+str(delta))
+logging.info("Time taken: "+str(delta))

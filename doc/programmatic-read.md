@@ -83,6 +83,6 @@ if ser.isOpen():
 try: 
     ser.open()
 except Exception, e:
-    print "error open serial port: " + str(e)
+    logging.info "error open serial port: " + str(e)
     exit()
 ```

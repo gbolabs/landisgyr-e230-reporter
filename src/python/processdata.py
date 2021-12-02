@@ -1,13 +1,13 @@
 import json
 import datetime
 
-def parse_powermeter_data(rsPayload):
+def parse_powermeter_data(rsPayload :str):
     # Find index of 1.8.1
-    idx181 = rsPayload.index("1.8.1")
-    idx182 = rsPayload.index("1.8.2")
-    idxIL1 = rsPayload.index("31.7.0")
-    idxIL2 = rsPayload.index("51.7.0")
-    idxIL3 = rsPayload.index("71.7.0")
+    idx181 = rsPayload.find("1.8.1")
+    idx182 = rsPayload.find("1.8.2")
+    idxIL1 = rsPayload.find("31.7.0")
+    idxIL2 = rsPayload.find("51.7.0")
+    idxIL3 = rsPayload.find("71.7.0")
 
 
     # 1.8.1(025139.058*kWh)
@@ -42,7 +42,7 @@ def store_powermeter_data(readData):
         # parse file
         data = json.loads(data_json)
     except:
-        print('Unable to read_data history assumes none existed.')
+        logging.info('Unable to read_data history assumes none existed.')
         defaults = '{"sampling":"'+str(datetime.datetime.now())+'", "consumedHighTarif":0,"consumedLowTarif":0,"liveCurrentL1":0,"liveCurrentL2":0,"liveCurrentL3":0}'
         data = json.loads(defaults)
 
@@ -61,7 +61,7 @@ def store_powermeter_data(readData):
         jsonFile.write(jsonString)
         jsonFile.close()
     except:
-        print('Unable to write_data history. will not be able to compute delta consumption.')
+        logging.info('Unable to write_data history. will not be able to compute delta consumption.')
 
     return jsonString
 
