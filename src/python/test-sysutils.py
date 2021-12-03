@@ -1,4 +1,5 @@
 import logging
+from os import environ
 import unittest
 
 from sysutils import Sysutils
@@ -38,6 +39,14 @@ class TestSysUtils(unittest.TestCase):
         node_name = platform.node()
 
         self.assertFalse(result)
+        
+    def test_readenvironment_variable(self):
+        import sysutils
+        import platform
+        
+        env = Sysutils().ReadEnvironment()
+        logging.info('Read Environment: '+env)
+        self.assertIsNotNone(env)
 
 
 if __name__ == '__main__':
