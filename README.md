@@ -67,6 +67,9 @@ Without those sources and references I would not have been able to achieve this 
 
 # How to develop
 
-1. Install Python
-2. Install modules
- - 
+## Linux
+
+```sh
+sudo apt install python3 python3-pip
+pip install requests
+```
