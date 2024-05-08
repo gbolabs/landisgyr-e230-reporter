@@ -64,3 +64,9 @@ Without those sources and references I would not have been able to achieve this 
 
 - <https://microclub.ch/2019/06/14/2019-06-14-interface-optique-pour-compteurs-denergie-electrique-landisgyr-e230/>
 - <https://github.com/bossjl/readlandisgyr_e230/>
+
+# How to develop
+
+1. Install Python
+2. Install modules
+ - 
