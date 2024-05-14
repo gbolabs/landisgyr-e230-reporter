@@ -32,6 +32,16 @@ C.7.0(0056)
 p
 ```
 
-The format is documented here.
+## 2 - The relevant information are extracted
 
-## 2 - 
+We read the `1.8.x` and `2.8.x` where the `.1` is the high-tarif and the `.2` is the low-tarif.
+
+This is achieved using the `parse_powermeter_data(data)` python method.
+
+## 3 - The data are transposed to a json object
+
+This is done by the `transformAndStore()` method.
+
+```json
+{"consumedLowTarif": "21567.055", "injectedEnergyTotal": "21567.055", "liveCurrentL3": "001.7", "sampling": "2022-03-25 16:19:54.194134", "liveCurrentL1": "00000", "liveCurrentL2": "001.0", "consumedHighTarif": "26927.047"}
+```
