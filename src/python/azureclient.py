@@ -14,8 +14,8 @@ def post_to_energymeasures(jsondata):
     url = 'https://energymeasures.fly.dev/api/energymeter'
     headers = {'Content-type': 'application/json'}
     response = requests.post(url, data=jsondata, headers=headers)
+    print(response.status_code)
     if response.status_code != 200:
         print('Unable to post request to energymeasures')
-        print(response.text)
     else:
         print('Data posted to energymeasures')
