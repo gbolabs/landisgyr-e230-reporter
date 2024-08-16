@@ -6,6 +6,8 @@ def parse_powermeter_data(rsPayload):
     idx181 = rsPayload.index("1.8.1")
     idx182 = rsPayload.index("1.8.2")
     idx280 = rsPayload.index("2.8.0")
+    idx281 = rsPayload.index("2.8.1")
+    idx282 = rsPayload.index("2.8.2")
     idxIL1 = rsPayload.index("31.7.0")
     idxIL2 = rsPayload.index("51.7.0")
     idxIL3 = rsPayload.index("71.7.0")
@@ -21,6 +23,8 @@ def parse_powermeter_data(rsPayload):
     parsedData.append(rsPayload[idx181:(idx181+energyValueLength)])
     parsedData.append(rsPayload[idx182:(idx182+energyValueLength)])
     parsedData.append(rsPayload[idx280:(idx280+energyValueLength)])
+    parsedData.append(rsPayload[idx281:(idx281+energyValueLength)])
+    parsedData.append(rsPayload[idx282:(idx282+energyValueLength)])
     parsedData.append(rsPayload[idxIL1:(idxIL1+currentValueLength)])
     parsedData.append(rsPayload[idxIL2:(idxIL2+currentValueLength)])
     parsedData.append(rsPayload[idxIL3:(idxIL3+currentValueLength)])
@@ -32,9 +36,12 @@ def parse_powermeter_data(rsPayload):
 # Expects an array with the read values in sequence order;
 # [0] -> accumulated consumed energy high-tarif [KWh]
 # [1] -> accumulated consumed energy low-tarif [kWh]
-# [2] -> currently delivered current L1 [A]
-# [3] -> currently delivered current L2 [A]
-# [4] -> currently delivered current L3 [A]
+# [2] -> accumulated injected energy total [kWh]
+# [3] -> accumulated injected energy high-tarif [kWh]
+# [4] -> accumulated injected energy low-tarif [kWh]
+# [5] -> currently delivered current L1 [A]
+# [6] -> currently delivered current L2 [A]
+# [7] -> currently delivered current L3 [A]
 def transformAndStore(readData):
     try:
         # read file
@@ -53,10 +60,12 @@ def transformAndStore(readData):
     data['consumedHighTarif'] = extractEnergy(readData[0])
     data['consumedLowTarif'] = extractEnergy(readData[1])
     data['injectedEnergyTotal'] = extractEnergy(readData[2])
+    data['injectedEnergyHighTarif'] = extractEnergy(readData[3])
+    data['injectedEnergyLowTarif'] = extractEnergy(readData[4])
 
-    data['liveCurrentL1'] = extractLiveCurrent(readData[3])
-    data['liveCurrentL2'] = extractLiveCurrent(readData[4])
-    data['liveCurrentL3'] = extractLiveCurrent(readData[5])
+    data['liveCurrentL1'] = extractLiveCurrent(readData[5])
+    data['liveCurrentL2'] = extractLiveCurrent(readData[6])
+    data['liveCurrentL3'] = extractLiveCurrent(readData[7])
 
     try:
         jsonString = json.dumps(data)

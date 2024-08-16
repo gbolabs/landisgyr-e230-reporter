@@ -1,7 +1,10 @@
 import time
 import serial
 from processdata import parse_powermeter_data
-from azureclient import post_to_azure_read_info
+from azureclient import (
+    post_to_azure_read_info,
+    post_to_energymeasures
+)
 from storerawdata import writeTofile
 
 READ_BYTES = 375
@@ -52,3 +55,5 @@ writeTofile(data)
 paresdData = parse_powermeter_data(data)
 
 post_to_azure_read_info(paresdData)
+
+post_to_energymeasures(paresdData)
