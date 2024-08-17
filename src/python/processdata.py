@@ -56,7 +56,8 @@ def transformAndStore(readData):
         data = json.loads(defaults)
 
     # Stored consumed energy
-    data['sampling']= str(datetime.datetime.now())
+    # data['sampling']= str(datetime.datetime.now())
+    data['sampling'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
     data['consumedHighTarif'] = extractEnergy(readData[0])
     data['consumedLowTarif'] = extractEnergy(readData[1])
     data['injectedEnergyTotal'] = extractEnergy(readData[2])
