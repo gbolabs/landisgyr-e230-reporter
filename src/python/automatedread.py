@@ -54,6 +54,6 @@ writeTofile(data)
 
 paresdData = parse_powermeter_data(data)
 
-post_to_azure_read_info(paresdData)
+# post_to_azure_read_info(paresdData)
 
 post_to_energymeasures(paresdData)
