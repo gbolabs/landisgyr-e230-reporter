@@ -19,8 +19,10 @@ def is_raspberry_pi():
     return False
 
 if is_raspberry_pi():
+    print("Running on Raspberry Pi.")
     import serial  # Use real serial communication on Raspberry Pi
 else:
+    print("Running on non-Raspberry Pi environment.")
     # Mock serial for non-Raspberry Pi environments
     class MockSerial:
         PARITY_EVEN = "E"
@@ -73,51 +75,43 @@ def get_meter_measure(meter_id):
     Returns:
         JSON response containing meter data or an error message.
     """
-    if isinstance(serial, MockSerial):
-        # Return mock data when not running on RPI
-        meter_data = MOCK_METER_DATA.get(meter_id)
-        if meter_data:
-            return jsonify({"meter_id": meter_id, "data": meter_data}), 200
-        else:
-            return jsonify({"error": f"No data found for meter ID '{meter_id}'"}), 404
-    else:
-        # Read data from real serial port on Raspberry Pi
-        try:
-            ser = serial.Serial(
-                port=f'/dev/ttyUSB{meter_id}',
-                baudrate=300,
-                parity=serial.PARITY_EVEN,
-                stopbits=serial.STOPBITS_ONE,
-                bytesize=serial.SEVENBITS,
-                timeout=15,
-                xonxoff=False,
-                rtscts=False,
-            )
-            if not ser.isOpen():
-                ser.open()
+    # Read data from real serial port on Raspberry Pi
+    try:
+        ser = serial.Serial(
+            port=f'/dev/ttyUSB{meter_id}',
+            baudrate=300,
+            parity=serial.PARITY_EVEN,
+            stopbits=serial.STOPBITS_ONE,
+            bytesize=serial.SEVENBITS,
+            timeout=15,
+            xonxoff=False,
+            rtscts=False,
+        )
+        if not ser.isOpen():
+            ser.open()
 
-            # Send commands to retrieve meter data
-            ser.write(b"\x2F\x3F\x21\x0D\x0A")  # /?!<CRL><LF>
-            time.sleep(1)
-            ser.write(b"\x06\x30\x30\x30\x0D\x0A")  # <ACK>000<CR><LF>
-            time.sleep(1)
-            data = ser.read(375)  # Read 375 bytes of data
-            ser.close()
+        # Send commands to retrieve meter data
+        ser.write(b"\x2F\x3F\x21\x0D\x0A")  # /?!<CRL><LF>
+        time.sleep(1)
+        ser.write(b"\x06\x30\x30\x30\x0D\x0A")  # <ACK>000<CR><LF>
+        time.sleep(1)
+        data = ser.read(375)  # Read 375 bytes of data
+        ser.close()
 
-            pattern = r"(1\.8\.[012])\(([\d\.]+)\*kWh\)"
-            decoded_data = data.decode('utf-8')
+        pattern = r"(1\.8\.[012])\(([\d\.]+)\*kWh\)"
+        decoded_data = data.decode('utf-8')
 
-            # Find all matches
-            matches = re.findall(pattern, decoded_data)
+        # Find all matches
+        matches = re.findall(pattern, decoded_data)
 
-            # Display the results
-            result = {match[0]: match[1] for match in matches}
-        
-            # Get the current date and time in ISO format
-            measure_datetime = datetime.utcnow().replace(microsecond=0).isoformat() + '+00:00'
+        # Display the results
+        result = {match[0]: match[1] for match in matches}
+    
+        # Get the current date and time in ISO format
+        measure_datetime = datetime.utcnow().replace(microsecond=0).isoformat() + '+00:00'
 
-            return jsonify({"meter_id": meter_id, "decoded_data": result, "measure_datetime": measure_datetime}), 200
+        return jsonify({"meter_id": meter_id, "decoded_data": result, "measure_datetime": measure_datetime}), 200
 
-        except Exception as e:
-            return jsonify({"error": f"Failed to read from serial: {e}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Failed to read from serial: {e}"}), 500
 
