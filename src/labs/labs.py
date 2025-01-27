@@ -31,6 +31,9 @@ def communicate_with_meter(port):
         ser.write(b"/?!\r\n")  # Send request for identification
         time.sleep(1)
         
+        # bauds 4800
+        ser.baudrate = 4800
+
         # Read response
         response = ser.read(90).decode('ascii')
         print("Response from meter:", response)
