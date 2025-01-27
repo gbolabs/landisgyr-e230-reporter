@@ -75,6 +75,9 @@ def get_meter_measure(meter_id):
     Returns:
         JSON response containing meter data or an error message.
     """
+
+    debug = request.args.get('debug', 'false').lower() == 'true'  # Check for 'debug' query parameter
+
     # Read data from real serial port on Raspberry Pi
     try:
         ser = serial.Serial(
@@ -99,7 +102,14 @@ def get_meter_measure(meter_id):
         ser.close()
 
         pattern = r"(1\.8\.[012])\(([\d\.]+)\*kWh\)"
+        
+        if debug:
+            print(f"Raw data: {data}")
+
         decoded_data = data.decode('utf-8')
+
+        if debug:
+            print(f"Decoded data: {decoded_data}")
 
         # Find all matches
         matches = re.findall(pattern, decoded_data)
