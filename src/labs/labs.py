@@ -32,17 +32,17 @@ def communicate_with_meter(port):
         time.sleep(1)
         
         # bauds 4800
-        ser.baudrate = 4800
+        ser.baudrate = 300
 
         # Read response
-        response = ser.read(150).decode('ascii')
+        response = ser.read(120).decode('ascii')
         print("Response from meter:", response)
 
         # Acknowledge the meter
         # send read command to the meter and read the response
         # <ACK>050<CR><LF>
-        read_command = b"\x06\x30\x35\x30\x0D\x0A"  # <ACK>050<CR><LF>
-        # ack_command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
+        # read_command = b"\x06\x30\x35\x30\x0D\x0A"  # <ACK>050<CR><LF>
+        read_command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
         time.sleep(3)
         ser.write(read_command)
         print("Sent acknowledgment.")
