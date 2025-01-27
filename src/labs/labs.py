@@ -37,6 +37,7 @@ def communicate_with_meter(port):
 
         # Acknowledge the meter
         ack_command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
+        time.sleep(3)
         ser.write(ack_command)
         print("Sent acknowledgment.")
         time.sleep(1)
