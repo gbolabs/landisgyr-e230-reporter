@@ -1,67 +1,67 @@
 import serial
 import time
 
-def communicate_with_meter(port):
+def connect_to_meter(port, baudrate):
     """
-    Communicates with the Landis+Gyr E230 meter via the given serial port.
-    
-    Args:
-        port (str): Path to the serial port (e.g., '/dev/ttyUSB0').
-    
-    Returns:
-        str: Response from the meter.
+    Connect to the meter using a serial interface.
+    :param port: The COM port of the optical interface (e.g., 'COM3', '/dev/ttyUSB0').
+    :param baudrate: Communication speed, typically 300 or 9600 for IEC 1107.
+    :return: Serial connection object.
     """
     try:
-        # Configure serial connection
         ser = serial.Serial(
             port=port,
-            baudrate=300,
+            baudrate=baudrate,
+            bytesize=serial.EIGHTBITS,
             parity=serial.PARITY_EVEN,
             stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.SEVENBITS,
-            timeout=9
+            timeout=1
         )
-
-        if not ser.isOpen():
-            ser.open()
-
-        print("Serial port opened.")
-        
-        # Send identification request
-        ser.write(b"/?!\r\n")  # Send request for identification
-        time.sleep(1)
-        
-        # bauds 4800
-        ser.baudrate = 300
-
-        # Read response
-        response = ser.read(120).decode('ascii')
-        print("Response from meter:", response)
-
-        # Acknowledge the meter
-        # send read command to the meter and read the response
-        # <ACK>050<CR><LF>
-        # read_command = b"\x06\x30\x35\x30\x0D\x0A"  # <ACK>050<CR><LF>
-        read_command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
-        time.sleep(3)
-        ser.write(read_command)
-        print("Sent acknowledgment.")
-        time.sleep(3)
-
-        # Read further data
-        data = ser.read(20).decode('ascii')  # Adjust bytes to match expected data length
-        print("Meter data:", data)
-
-        ser.close()
-        print("Serial port closed.")
-        return data
-
+        print("Connected to meter.")
+        return ser
     except serial.SerialException as e:
-        print("Error communicating with the meter:", e)
+        print(f"Failed to connect: {e}")
         return None
 
-# Example usage
-port = "/dev/ttyUSB1"  # Replace with your actual port
-meter_data = communicate_with_meter(port)
-if meter_data:
-    print("Final meter data:\n", meter_data)
+def handshake(serial_connection):
+    """
+    Perform the IEC 1107 handshake to initiate communication.
+    :param serial_connection: The serial connection object.
+    """
+    try:
+        # Send the initial request "/?!<CR><LF>" to wake up the meter
+        serial_connection.write(b"/?!\r\n")
+        time.sleep(0.5)
+        
+        # Read the response
+        response = serial_connection.read(100).decode('ascii', errors='ignore')
+        print(f"Handshake response: {response}")
+        
+        # Send ACK (acknowledgment) to proceed with data transfer (assuming '2' baudrate switch command)
+        serial_connection.write(b"\x06" + b"2" + b"\r\n")
+        time.sleep(0.5)
+
+        # Read the meter's data stream
+        data_stream = serial_connection.read(500).decode('ascii', errors='ignore')
+        print(f"Meter data: {data_stream}")
+    except Exception as e:
+        print(f"Error during handshake: {e}")
+
+def main():
+    # Replace 'COM3' with the correct port for your optical reader
+    port = '/dev/ttyUSB1'  # Windows example, or '/dev/ttyUSB0' for Linux
+    baudrate = 300  # Start with the initial baudrate defined by the meter
+
+    # Connect to the meter
+    serial_connection = connect_to_meter(port, baudrate)
+    if serial_connection:
+        try:
+            # Perform handshake and read data
+            handshake(serial_connection)
+        finally:
+            # Always close the serial connection when done
+            serial_connection.close()
+            print("Connection closed.")
+
+if __name__ == "__main__":
+    main()
