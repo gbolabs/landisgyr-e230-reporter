@@ -32,10 +32,10 @@ def communicate_with_meter(port):
         time.sleep(1)
         
         # bauds 4800
-        ser.baudrate = 2400
+        ser.baudrate = 4800
 
         # Read response
-        response = ser.read(110).decode('ascii')
+        response = ser.read(150).decode('ascii')
         print("Response from meter:", response)
 
         # Acknowledge the meter
