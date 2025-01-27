@@ -3,3 +3,4 @@
 - sudo systemctl daemon-reload
 - sudo systemctl start meterapi
 - sudo systemctl enable meterapi
+- gunicorn -b 0.0.0:8000 -w 4 wsgi:app

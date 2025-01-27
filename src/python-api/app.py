@@ -11,7 +11,7 @@ def is_raspberry_pi():
     try:
         with open('/proc/cpuinfo', 'r') as f:
             cpuinfo = f.read()
-            if 'raspberrypi' in cpuinfo.lower():
+            if 'raspberry' in cpuinfo.lower():
                 return True
     except FileNotFoundError:
         pass  # If /proc/cpuinfo is not found, it's not a Raspberry Pi
