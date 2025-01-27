@@ -12,7 +12,7 @@ def connect_to_meter(port, baudrate):
         ser = serial.Serial(
             port=port,
             baudrate=baudrate,
-            bytesize=serial.EIGHTBITS,
+            bytesize=serial.SEVENBITS,
             parity=serial.PARITY_EVEN,
             stopbits=serial.STOPBITS_ONE,
             timeout=1
