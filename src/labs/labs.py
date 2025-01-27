@@ -55,7 +55,7 @@ def communicate_with_meter(port):
         return None
 
 # Example usage
-port = "/dev/ttyUSB0"  # Replace with your actual port
+port = "/dev/ttyUSB1"  # Replace with your actual port
 meter_data = communicate_with_meter(port)
 if meter_data:
     print("Final meter data:\n", meter_data)
