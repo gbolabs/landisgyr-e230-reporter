@@ -108,5 +108,3 @@ def get_meter_measure(meter_id):
         except Exception as e:
             return jsonify({"error": f"Failed to read from serial: {e}"}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)

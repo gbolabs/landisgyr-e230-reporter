@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn instance to serve Meter API application
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/meter-api
+ExecStart=/usr/local/bin/gunicorn --workers 3 --bind unix:/home/pi/meter-api/meter-api.sock wsgi:app
+
+[Install]
+WantedBy=multi-user.target

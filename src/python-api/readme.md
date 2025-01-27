@@ -1,0 +1,5 @@
+- install unicorn sudo pip3 install gunicorn
+- copy the meterapi.service to /etc/systemd/system/
+- sudo systemctl daemon-reload
+- sudo systemctl start meterapi
+- sudo systemctl enable meterapi
