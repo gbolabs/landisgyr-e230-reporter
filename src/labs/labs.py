@@ -19,7 +19,7 @@ def communicate_with_meter(port):
             parity=serial.PARITY_EVEN,
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.SEVENBITS,
-            timeout=15
+            timeout=9
         )
 
         if not ser.isOpen():
@@ -32,11 +32,8 @@ def communicate_with_meter(port):
         time.sleep(1)
         
         # Read response
-        response = ser.read(110).decode('ascii')
+        response = ser.read(90).decode('ascii')
         print("Response from meter:", response)
-
-        # switch to 9600bps
-        ser.baudrate = 9600
 
         # Acknowledge the meter
         # send read command to the meter and read the response
