@@ -1,3 +1,5 @@
+- install requirements pip install -r requirements.txt
+
 - install unicorn sudo pip3 install gunicorn
 - copy the meterapi.service to /etc/systemd/system/
 - sudo systemctl daemon-reload

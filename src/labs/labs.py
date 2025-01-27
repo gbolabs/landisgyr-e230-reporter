@@ -35,15 +35,21 @@ def communicate_with_meter(port):
         response = ser.read(110).decode('ascii')
         print("Response from meter:", response)
 
+        # switch to 9600bps
+        ser.baudrate = 9600
+
         # Acknowledge the meter
-        ack_command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
+        # send read command to the meter and read the response
+        # <ACK>050<CR><LF>
+        read_command = b"\x06\x30\x35\x30\x0D\x0A"  # <ACK>050<CR><LF>
+        # ack_command = b"\x06\x30\x30\x30\x0D\x0A"  # <ACK>000<CR><LF>
         time.sleep(3)
-        ser.write(ack_command)
+        ser.write(read_command)
         print("Sent acknowledgment.")
         time.sleep(3)
 
         # Read further data
-        data = ser.read(375).decode('ascii')  # Adjust bytes to match expected data length
+        data = ser.read(20).decode('ascii')  # Adjust bytes to match expected data length
         print("Meter data:", data)
 
         ser.close()
