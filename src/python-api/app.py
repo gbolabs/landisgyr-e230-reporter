@@ -4,8 +4,21 @@ import time
 import re
 from datetime import datetime
 
-# Conditional import based on environment
-if platform.system() == "Linux" and "raspberrypi" in platform.uname().node:
+def is_raspberry_pi():
+    """
+    Detect if the system is running on a Raspberry Pi by reading `/proc/cpuinfo`.
+    """
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            cpuinfo = f.read()
+            if 'raspberrypi' in cpuinfo.lower():
+                return True
+    except FileNotFoundError:
+        pass  # If /proc/cpuinfo is not found, it's not a Raspberry Pi
+
+    return False
+
+if is_raspberry_pi():
     import serial  # Use real serial communication on Raspberry Pi
 else:
     # Mock serial for non-Raspberry Pi environments
