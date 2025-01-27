@@ -32,7 +32,7 @@ def communicate_with_meter(port):
         time.sleep(1)
         
         # Read response
-        response = ser.read(100).decode('ascii')
+        response = ser.read(110).decode('ascii')
         print("Response from meter:", response)
 
         # Acknowledge the meter
@@ -40,7 +40,7 @@ def communicate_with_meter(port):
         time.sleep(3)
         ser.write(ack_command)
         print("Sent acknowledgment.")
-        time.sleep(1)
+        time.sleep(3)
 
         # Read further data
         data = ser.read(375).decode('ascii')  # Adjust bytes to match expected data length
